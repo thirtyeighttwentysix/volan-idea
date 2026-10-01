@@ -64,8 +64,13 @@ intellijPlatform {
 
 // Publish the exact signed asset from a GitHub Release, without rebuilding it.
 providers.gradleProperty("publishArchive").orNull?.let { archive ->
-    tasks.publishPlugin { archiveFiles.setFrom(file(archive)) }
+    tasks.publishPlugin {
+        archiveFiles.setFrom(file(archive))
+        dependsOn(tasks.verifyPluginSignature)
+    }
     tasks.verifyPluginSignature { inputArchiveFile = file(archive) }
+} ?: tasks.verifyPluginSignature {
+    dependsOn(tasks.signPlugin)
 }
 
 tasks.test { maxHeapSize = "1g" }
