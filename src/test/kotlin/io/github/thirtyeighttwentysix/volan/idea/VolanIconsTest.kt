@@ -3,11 +3,26 @@ package io.github.thirtyeighttwentysix.volan.idea
 import com.intellij.openapi.util.IconLoader
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import java.awt.Color
+import java.awt.GraphicsEnvironment
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 
 class VolanIconsTest : BasePlatformTestCase() {
+    override fun setUp() {
+        super.setUp()
+        // IDEA disables icon rasterization by default in headless test applications.
+        if (GraphicsEnvironment.isHeadless()) IconLoader.activate()
+    }
+
+    override fun tearDown() {
+        try {
+            if (GraphicsEnvironment.isHeadless()) IconLoader.deactivate()
+        } finally {
+            super.tearDown()
+        }
+    }
+
     fun testFileAndPluginLogosLoadAtTheirNativeSizes() {
         assertSame(VolanIcons.FILE, VolanFileType.INSTANCE.icon)
         val variants = listOf("/icons/volan.svg", "/icons/volan_dark.svg", "/META-INF/pluginIcon.svg", "/META-INF/pluginIcon_dark.svg")

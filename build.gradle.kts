@@ -73,7 +73,10 @@ providers.gradleProperty("publishArchive").orNull?.let { archive ->
     dependsOn(tasks.signPlugin)
 }
 
-tasks.test { maxHeapSize = "1g" }
+tasks.test {
+    maxHeapSize = "1g"
+    systemProperty("java.awt.headless", "true")
+}
 
 tasks.processResources {
     from("LICENSE") { into("META-INF") }
