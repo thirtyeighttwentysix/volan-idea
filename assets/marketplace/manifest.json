@@ -1,0 +1,30 @@
+[
+  {
+    "file": "01-overview.png",
+    "width": 1586,
+    "height": 992,
+    "bytes": 1117478,
+    "sha256": "942e1aaf17deb0fd5f060b79c13db6064ee1467e9cf40b449bb0961414048b2c"
+  },
+  {
+    "file": "02-smart-completion-v2.png",
+    "width": 1586,
+    "height": 992,
+    "bytes": 1272020,
+    "sha256": "aa7ebd66c8899c8cfed21d8024939d2c503d9143120bdfb6d1a802cc5600e568"
+  },
+  {
+    "file": "03-diagnostics.png",
+    "width": 1586,
+    "height": 992,
+    "bytes": 1207977,
+    "sha256": "09c25abbd9a3f866c9922dc8aa6b8919b5fd81aebca3ba3c957914c995286dad"
+  },
+  {
+    "file": "04-formatting-navigation.png",
+    "width": 1586,
+    "height": 992,
+    "bytes": 1158710,
+    "sha256": "a598fe52d0549aa4b74e46ecf995ce9b63915632b350829f8a05be2bb2d8d65a"
+  }
+]
