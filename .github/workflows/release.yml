@@ -1,0 +1,78 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Verify, sign and release
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Validate version
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: python3 scripts/release.py validate --tag "$RELEASE_TAG"
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@07d1f8453baaff67fb503883367f8b13e6158a54 # v6
+        with:
+          cache-provider: basic
+      - name: Test and verify compatibility
+        run: ./gradlew test buildPlugin verifyPluginStructure verifyPlugin --console=plain
+      - name: Sign and verify signature
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          PRIVATE_KEY_PASSWORD: ${{ secrets.PRIVATE_KEY_PASSWORD }}
+        run: |
+          test -n "$PRIVATE_KEY" || { echo 'Missing PRIVATE_KEY signing secret'; exit 1; }
+          ./gradlew signPlugin verifyPluginSignature --no-configuration-cache --console=plain
+      - name: Prepare release assets
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python3 scripts/release.py notes --tag "$RELEASE_TAG"
+          python3 scripts/release.py checksums --tag "$RELEASE_TAG"
+          python3 scripts/release.py check-asset --tag "$RELEASE_TAG"
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          args=()
+          if [[ "$RELEASE_TAG" == *-* ]]; then args+=(--prerelease); fi
+          gh release create "$RELEASE_TAG" build/distributions/*.zip build/distributions/SHA256SUMS \
+            --verify-tag --title "Volan Schema ${RELEASE_TAG#v}" \
+            --notes-file build/release-notes.md "${args[@]}"
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: release-reports
+          path: |
+            build/reports/
+            build/test-results/
+          retention-days: 30
+
+  marketplace:
+    name: Publish Marketplace update
+    needs: release
+    if: vars.MARKETPLACE_PUBLISHING_ENABLED == 'true'
+    uses: ./.github/workflows/marketplace.yml
+    with:
+      tag: ${{ github.ref_name }}
+      channel: ${{ contains(github.ref_name, '-') && 'beta' || 'default' }}
+    secrets: inherit

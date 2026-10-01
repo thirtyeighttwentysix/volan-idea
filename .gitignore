@@ -1,0 +1,15 @@
+.gradle/
+.kotlin/
+.intellijPlatform/
+.idea/
+build/
+*.iml
+local.properties
+.env
+.env.*
+!.env.example
+*.key
+*.p12
+*.pfx
+private*.pem
+.release-secrets/

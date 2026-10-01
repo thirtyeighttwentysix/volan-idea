@@ -1,0 +1,31 @@
+<idea-plugin>
+    <id>io.github.thirtyeighttwentysix.volan.idea</id>
+    <name>Volan Schema</name>
+    <vendor url="https://github.com/thirtyeighttwentysix/volan-idea">Volan</vendor>
+    <description><![CDATA[
+        Language support for Volan ORM .volan schemas: context-aware completion,
+        quick documentation, syntax highlighting, syntax and semantic diagnostics,
+        navigation to model/enum/field declarations, folding and canonical formatting.
+        <p>Smart suggestions respect field types, database providers, primary and unique
+        keys, composite keys and relation arguments. Uses the Volan parser and validator;
+        no database connection is required. Supports IntelliJ IDEA 2026.1.x.</p>
+        <p><a href="https://github.com/thirtyeighttwentysix/volan-idea">Source and documentation</a>
+        · <a href="https://github.com/thirtyeighttwentysix/volan-idea/issues">Report an issue</a></p>
+    ]]></description>
+    <depends>com.intellij.modules.platform</depends>
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType name="Volan Schema" language="Volan" extensions="volan"
+                  implementationClass="io.github.thirtyeighttwentysix.volan.idea.VolanFileType" fieldName="INSTANCE"/>
+        <lang.parserDefinition language="Volan" implementationClass="io.github.thirtyeighttwentysix.volan.idea.VolanParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Volan" implementationClass="io.github.thirtyeighttwentysix.volan.idea.VolanSyntaxHighlighterFactory"/>
+        <annotator language="Volan" implementationClass="io.github.thirtyeighttwentysix.volan.idea.VolanAnnotator"/>
+        <completion.contributor language="Volan" implementationClass="io.github.thirtyeighttwentysix.volan.idea.VolanCompletionContributor"/>
+        <typedHandler implementation="io.github.thirtyeighttwentysix.volan.idea.VolanCompletionPopup"/>
+        <lang.documentationProvider language="Volan" implementationClass="io.github.thirtyeighttwentysix.volan.idea.VolanDocumentationProvider"/>
+        <psi.referenceContributor language="Volan" implementation="io.github.thirtyeighttwentysix.volan.idea.VolanReferenceContributor"/>
+        <lang.braceMatcher language="Volan" implementationClass="io.github.thirtyeighttwentysix.volan.idea.VolanBraceMatcher"/>
+        <lang.commenter language="Volan" implementationClass="io.github.thirtyeighttwentysix.volan.idea.VolanCommenter"/>
+        <lang.foldingBuilder language="Volan" implementationClass="io.github.thirtyeighttwentysix.volan.idea.VolanFoldingBuilder"/>
+        <formattingService implementation="io.github.thirtyeighttwentysix.volan.idea.VolanFormattingService"/>
+    </extensions>
+</idea-plugin>

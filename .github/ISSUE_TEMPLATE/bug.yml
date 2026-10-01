@@ -1,0 +1,23 @@
+name: Bug report
+description: Completion, diagnostics, formatting or IDE integration problem
+labels: [bug]
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Plugin version, IDEA version/build and OS
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps and minimal schema
+      description: Include a small .volan example, expected and actual behavior. Remove credentials and personal data.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Relevant IDEA log entries or screenshots, if available
